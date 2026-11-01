@@ -1,39 +1,52 @@
 /**
- * gameRoutes.js - REST endpoints for the game (Week 3 version).
+ * gameRoutes.js - REST endpoints for playing a game.
  * Author: Utsav Sah
  *
- *   GET  /api/game/puzzle            -> { puzzleId, image }   (solution stays on the server!)
- *   POST /api/game/answer {puzzleId, answer} -> { correct, solution }
+ *   GET  /api/game/difficulties     -> list of difficulty levels
+ *   POST /api/game/start            {difficulty} -> game state
+ *   POST /api/game/:id/next         -> { image, seconds, state }    (no solution!)
+ *   POST /api/game/:id/answer       {answer: 0-9 | null} -> result
+ *   POST /api/game/:id/quit         -> summary
+ *
+ * Each route is an event handler: Express calls it when a matching HTTP request arrives.
  */
 'use strict';
 
-const crypto = require('crypto');
 const express = require('express');
 const tomatoApi = require('../services/tomatoApi');
+const { createGameService, DIFFICULTIES } = require('../services/gameService');
+
+const gameService = createGameService({ getPuzzle: tomatoApi.fetchPuzzle });
+
+// Timer event on the server: tidy up abandoned games every 10 minutes.
+setInterval(() => gameService.cleanup(), 10 * 60 * 1000).unref();
 
 const router = express.Router();
-const openPuzzles = new Map(); // puzzleId -> solution
 
-router.get('/puzzle', async (req, res) => {
-  try {
-    const puzzle = await tomatoApi.fetchPuzzle();
-    const puzzleId = crypto.randomUUID();
-    openPuzzles.set(puzzleId, puzzle.solution);
-    res.json({ puzzleId, image: puzzle.image });
-  } catch (err) {
-    console.error(err.message);
-    res.status(502).json({ error: 'Could not reach the Tomato API' });
-  }
+// Week 4: no login yet, everybody plays as "Guest".
+const currentPlayer = (req) => ({ id: 'guest', username: 'Guest' });
+
+router.get('/difficulties', (req, res) => {
+  res.json(DIFFICULTIES);
 });
 
-router.post('/answer', (req, res) => {
-  const { puzzleId, answer } = req.body || {};
-  if (!openPuzzles.has(puzzleId)) {
-    return res.status(404).json({ error: 'Unknown puzzle' });
-  }
-  const solution = openPuzzles.get(puzzleId);
-  openPuzzles.delete(puzzleId); // each puzzle can only be answered once
-  res.json({ correct: Number(answer) === solution, solution });
+router.post('/start', (req, res) => {
+  const difficulty = (req.body && req.body.difficulty) || 'normal';
+  res.status(201).json(gameService.startGame({ player: currentPlayer(req), difficulty }));
+});
+
+router.post('/:id/next', async (req, res) => {
+  res.json(await gameService.nextPuzzle(req.params.id, currentPlayer(req)));
+});
+
+router.post('/:id/answer', (req, res) => {
+  const raw = req.body ? req.body.answer : undefined;
+  const answer = raw === null || raw === undefined ? null : Number(raw);
+  res.json(gameService.submitAnswer(req.params.id, currentPlayer(req), answer));
+});
+
+router.post('/:id/quit', (req, res) => {
+  res.json(gameService.quitGame(req.params.id, currentPlayer(req)));
 });
 
 module.exports = router;

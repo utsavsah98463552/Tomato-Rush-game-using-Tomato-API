@@ -7,6 +7,7 @@
  *
  * References:
  *  - Express "Hello world" / static files guide: https://expressjs.com/en/starter/static-files.html
+ *  - Express error handling: https://expressjs.com/en/guide/error-handling.html
  */
 'use strict';
 
@@ -21,11 +22,23 @@ function createApp() {
   app.use(express.json({ limit: '10kb' }));      // parse JSON request bodies
   app.use(express.static(config.publicDir));      // serve the front end
 
-  app.use('/api/game', gameRoutes);               // puzzle + answer endpoints
+  app.use('/api/game', gameRoutes);               // game endpoints
 
   // Simple health check - useful to prove the server is up during the demo.
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', uptimeSeconds: Math.round(process.uptime()) });
+  });
+
+  // Unknown API route
+  app.use('/api', (req, res) => res.status(404).json({ error: 'Not found' }));
+
+  // Central error handler: Express 5 forwards errors thrown in async handlers here.
+  // eslint-disable-next-line no-unused-vars
+  app.use((err, req, res, next) => {
+    const status = err.status || err.statusCode || 500;
+    if (!err.status) console.error(err);
+    // Only show our own error messages; hide internal details of unexpected errors.
+    res.status(status).json({ error: err.status ? err.message : 'Something went wrong on the server' });
   });
 
   return app;

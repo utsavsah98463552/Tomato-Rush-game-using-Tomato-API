@@ -16,8 +16,14 @@ const express = require('express');
 const tomatoApi = require('../services/tomatoApi');
 const { createGameService, DIFFICULTIES } = require('../services/gameService');
 const { requireAuth } = require('../auth/auth');
+const gameEvents = require('../events/gameEvents');
 
-const gameService = createGameService({ getPuzzle: tomatoApi.fetchPuzzle });
+// When a game ends the service only RAISES an event. It does not know who listens
+// (saving the score, logging, live leaderboard) - that keeps the parts independent.
+const gameService = createGameService({
+  getPuzzle: tomatoApi.fetchPuzzle,
+  onGameOver: (summary) => gameEvents.emit('game:finished', summary),
+});
 
 // Timer event on the server: tidy up abandoned games every 10 minutes.
 setInterval(() => gameService.cleanup(), 10 * 60 * 1000).unref();

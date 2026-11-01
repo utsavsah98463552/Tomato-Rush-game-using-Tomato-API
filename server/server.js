@@ -16,10 +16,13 @@ const cookieParser = require('cookie-parser');
 const config = require('./config');
 const authRoutes = require('./routes/authRoutes');
 const gameRoutes = require('./routes/gameRoutes');
+const leaderboardRoutes = require('./routes/leaderboardRoutes');
+const { registerHandlers } = require('./events/handlers');
 
 /** Create and configure the Express app (exported so tests can use it). */
 function createApp() {
   const app = express();
+  registerHandlers(); // subscribe to server-side game events (saving scores, ...)
 
   app.use(express.json({ limit: '10kb' }));      // parse JSON request bodies
   app.use(cookieParser());                        // read cookies into req.cookies
@@ -27,6 +30,7 @@ function createApp() {
 
   app.use('/api/auth', authRoutes);               // register / login / logout
   app.use('/api/game', gameRoutes);               // game endpoints (login required)
+  app.use('/api/leaderboard', leaderboardRoutes); // high scores + personal stats
 
   // Simple health check - useful to prove the server is up during the demo.
   app.get('/api/health', (req, res) => {

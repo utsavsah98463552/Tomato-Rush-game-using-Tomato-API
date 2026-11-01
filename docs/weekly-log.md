@@ -67,3 +67,19 @@ git checkout main      # back to the latest version
 * `GET /api/leaderboard/me` – personal stats (games, best, average, solved, recent games).
 * Menu shows "Your stats" and "Leaderboard"; game-over screen shows "New personal best!".
 * Usernames are HTML-escaped before rendering (XSS defence).
+
+## Week 7 – Live updates, resilience & testing
+* **Live leaderboard with Server-Sent Events** (`GET /api/leaderboard/stream`): the server
+  pushes a `score` event to every open browser when the `score:saved` event fires.
+  Browser side uses `EventSource` (`public/js/live.js`) – a "● live" badge shows the
+  connection; other players' scores pop up as a toast and their row flashes.
+* **Offline fallback puzzles** (`fallbackPuzzle.js`): if the Tomato API fails or times out,
+  the server draws an SVG equation puzzle ("3 + 🍅 = 8") so the game keeps working.
+  A tiny circuit breaker (`puzzleProvider.js`) skips the API for 30 s after a failure.
+* **Login throttling by IP number** (`rateLimiter.js`): 5 failed logins per IP in 10 min
+  → HTTP 429 with `Retry-After`.
+* Players see **when and from which IP they last logged in**.
+* **Automated tests** with Node's built-in test runner (`npm test`, 19 tests): game rules,
+  time-outs, ownership checks, API parsing, unambiguous offline puzzles, rate limiter, and a
+  full HTTP journey (register → cookie flags → play → leaderboard; bcrypt hash stored).
+* Bug found by a test: "0 × 🍅 = 0" puzzles had 10 correct answers – fixed (no zeros for ×).

@@ -1,11 +1,12 @@
 {
   "name": "tomato-rush",
-  "version": "0.2.0",
+  "version": "0.7.0",
   "description": "Puzzle game using the Tomato API - CIS046-3 Software for Enterprise",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "dev": "node --watch server/server.js"
+    "dev": "node --watch server/server.js",
+    "test": "node --test"
   },
   "author": "Utsav Sah",
   "license": "MIT",

@@ -82,4 +82,12 @@ git checkout main      # back to the latest version
 * **Automated tests** with Node's built-in test runner (`npm test`, 19 tests): game rules,
   time-outs, ownership checks, API parsing, unambiguous offline puzzles, rate limiter, and a
   full HTTP journey (register → cookie flags → play → leaderboard; bcrypt hash stored).
-* Bug found by a test: "0 × 🍅 = 0" puzzles had 10 correct answers – fixed (no zeros for ×).
+* Edge case fixed: "0 × 🍅 = 0" would accept any digit, so × puzzles never use 0; a test now checks every offline puzzle has exactly one answer.
+
+## Week 8 – Release v1.0 & tutor feedback session
+* UI polish: favicon, footer credit for the Tomato API, Enter = play again.
+* Final README (setup, how to play, four themes → code map, API table, structure).
+* `docs/demo-script.md`, `docs/week8-progress-form.md`, `docs/roadmap.md` (next steps).
+* AI assistance acknowledged in `docs/references.md` as required by the brief.
+* Tagged `week-08` and `v1.0.0`.
+* *Tutor feedback (to fill in after the session):* …

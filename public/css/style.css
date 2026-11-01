@@ -154,3 +154,7 @@ h1, h2, h3 { margin: 0 0 .75rem; line-height: 1.2; }
 .best-banner { color: var(--leaf); font-weight: 700; font-size: 1.2rem; }
 .live { font-size: .8rem; color: var(--leaf); vertical-align: middle; }
 @media (max-width: 760px) { .menu-panels { grid-template-columns: 1fr; } }
+
+/* ---------- footer (week 8) ---------- */
+.footer { text-align: center; font-size: .85rem; padding: 1rem; }
+.footer a { color: var(--tomato); }

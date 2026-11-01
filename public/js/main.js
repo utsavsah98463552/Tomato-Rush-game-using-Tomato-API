@@ -168,6 +168,11 @@ $('btn-again').addEventListener('click', () => startGame(lastDifficulty));
 $('btn-menu').addEventListener('click', () => ui.showScreen('menu'));
 
 document.addEventListener('keydown', (event) => {
+  // Enter on the game-over screen = play again
+  if (event.key === 'Enter' && !document.getElementById('screen-over').classList.contains('hidden')) {
+    startGame(lastDifficulty);
+    return;
+  }
   if (!game.active) return;
   if (/^[0-9]$/.test(event.key)) answer(Number(event.key));
   if (event.key === 'Escape') quit();

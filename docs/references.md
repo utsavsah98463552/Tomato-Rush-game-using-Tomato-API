@@ -28,3 +28,9 @@ also repeated as comments at the top of each source file where the code is used.
 
 * OWASP Session Management & Password Storage cheat sheets – https://cheatsheetseries.owasp.org/
 * MDN `document.cookie` – https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+
+## Added in week 7
+* MDN – Server-sent events / EventSource – https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
+* M. Fowler – Circuit Breaker – https://martinfowler.com/bliki/CircuitBreaker.html
+* OWASP Authentication Cheat Sheet (login throttling) – https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
+* Node.js test runner – https://nodejs.org/api/test.html

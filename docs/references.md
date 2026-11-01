@@ -18,3 +18,13 @@ also repeated as comments at the top of each source file where the code is used.
 * Express guide – https://expressjs.com/
 * MDN – fetch, AbortController – https://developer.mozilla.org/
 * 12-factor config – https://12factor.net/config
+
+## Added in week 5
+| Package | Purpose | Licence |
+|---|---|---|
+| bcryptjs | Password hashing | MIT |
+| jsonwebtoken | Signed session tokens (JWT) | MIT |
+| cookie-parser | Reads cookies in Express | MIT |
+
+* OWASP Session Management & Password Storage cheat sheets – https://cheatsheetseries.owasp.org/
+* MDN `document.cookie` – https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie

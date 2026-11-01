@@ -43,3 +43,17 @@ git checkout main      # back to the latest version
   time limit are checked by the server so a player cannot cheat from the browser.
 * Difficulty levels: Easy / Normal / Hard.
 * Central Express error handler; friendly message when the Tomato API is down.
+
+## Week 5 – Authentication & cookies (virtual identity)
+* Register / login / logout with `POST /api/auth/*`, `GET /api/auth/me`.
+* Passwords hashed with **bcrypt** (10 salt rounds); only the hash is stored.
+* Login creates a signed **JWT** (2 h expiry) stored in an **HttpOnly, SameSite=Strict**
+  cookie (`Secure` in production). `requireAuth` middleware protects all game routes, so
+  every game belongs to a verified user.
+* Same error message for unknown user and wrong password (no user enumeration).
+* Second, JavaScript-readable cookie `tr_last_user` remembers the username on the login
+  form – shows the difference between an identity cookie and a preference cookie.
+* Accounts saved in `data/db.json` through a small data-access layer (`store.js`).
+* Secrets configured via environment variables (`.env.example`); server refuses to start
+  in production without `JWT_SECRET`.
+* Bug fixed after testing: form stayed on "Create account" tab after logout.

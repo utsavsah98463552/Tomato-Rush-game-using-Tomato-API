@@ -3,7 +3,7 @@
 A browser puzzle game for **CIS046-3 Software for Enterprise** (University of Bedfordshire).
 The player solves picture puzzles served by Marc Conrad's **Tomato API** and races the clock.
 
-> Status: **Week 4 – playable game (guest mode).** `npm install`, `npm start`, open http://localhost:3000
+> Status: **Week 5 – login required, accounts saved.** `npm install`, `npm start`, open http://localhost:3000
 
 ## Plan
 See [`docs/architecture.md`](docs/architecture.md) for the design and

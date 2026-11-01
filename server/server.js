@@ -12,6 +12,7 @@
 
 const express = require('express');
 const config = require('./config');
+const gameRoutes = require('./routes/gameRoutes');
 
 /** Create and configure the Express app (exported so tests can use it). */
 function createApp() {
@@ -19,6 +20,8 @@ function createApp() {
 
   app.use(express.json({ limit: '10kb' }));      // parse JSON request bodies
   app.use(express.static(config.publicDir));      // serve the front end
+
+  app.use('/api/game', gameRoutes);               // puzzle + answer endpoints
 
   // Simple health check - useful to prove the server is up during the demo.
   app.get('/api/health', (req, res) => {

@@ -1,22 +1,55 @@
 <!DOCTYPE html>
 <!--
-  Tomato Rush - main page (Week 1 placeholder)
+  Tomato Rush - main page (Week 3: first working prototype of the Tomato API)
   Author: Utsav Sah
-
-  Planned screens (each will be a <section> that is shown/hidden by JavaScript):
-    1. Auth screen      - login / register forms
-    2. Menu screen      - choose difficulty, see stats and leaderboard
-    3. Game screen      - puzzle image, number pad 0-9, timer, lives, score
-    4. Game-over screen - final score, play again
 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tomato Rush</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+    img { max-width: 100%; border: 1px solid #ccc; }
+  </style>
 </head>
 <body>
   <h1>Tomato Rush 🍅</h1>
-  <p>Coming soon – a puzzle game built on the Tomato API.</p>
+  <img id="puzzle" alt="Tomato puzzle">
+  <form id="answer-form">
+    <input id="answer" type="number" min="0" max="9" required>
+    <button>Check</button>
+  </form>
+  <p id="result"></p>
+  <button id="next">Next puzzle</button>
+
+  <script>
+    // Week 3 prototype: just proves the round trip browser -> my server -> Tomato API works.
+    let puzzleId = null;
+
+    async function loadPuzzle() {
+      const res = await fetch('/api/game/puzzle');
+      const data = await res.json();
+      puzzleId = data.puzzleId;
+      document.getElementById('puzzle').src = data.image;
+      document.getElementById('result').textContent = '';
+    }
+
+    document.getElementById('answer-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const answer = document.getElementById('answer').value;
+      const res = await fetch('/api/game/answer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ puzzleId, answer }),
+      });
+      const data = await res.json();
+      document.getElementById('result').textContent =
+        data.correct ? 'Correct!' : `Wrong - the answer was ${data.solution}`;
+    });
+
+    document.getElementById('next').addEventListener('click', loadPuzzle);
+    loadPuzzle();
+  </script>
 </body>
 </html>

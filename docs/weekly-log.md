@@ -13,3 +13,9 @@ git checkout main      # back to the latest version
 * Drew the client / server / Tomato API architecture.
 * Set up the repository, `.gitignore` and folder plan.
 * Placeholder `public/index.html` with the screen layout sketched in comments.
+
+## Week 2 – Version control & server set-up
+* Branching strategy and commit conventions written in `version-control.md`.
+* `package.json` + Express installed; `package-lock.json` committed.
+* `server/server.js` serves the static front end and a `/api/health` endpoint.
+* Settings moved into `server/config.js` (read from environment variables).

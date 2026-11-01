@@ -1,55 +1,85 @@
 <!DOCTYPE html>
 <!--
-  Tomato Rush - main page (Week 3: first working prototype of the Tomato API)
+  Tomato Rush - single page front end
   Author: Utsav Sah
+  Each <section class="screen"> is shown/hidden by ui.js (no page reloads).
 -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tomato Rush</title>
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
-    img { max-width: 100%; border: 1px solid #ccc; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>Tomato Rush 🍅</h1>
-  <img id="puzzle" alt="Tomato puzzle">
-  <form id="answer-form">
-    <input id="answer" type="number" min="0" max="9" required>
-    <button>Check</button>
-  </form>
-  <p id="result"></p>
-  <button id="next">Next puzzle</button>
+  <header class="topbar">
+    <div class="logo">🍅 Tomato <span>Rush</span></div>
+  </header>
 
-  <script>
-    // Week 3 prototype: just proves the round trip browser -> my server -> Tomato API works.
-    let puzzleId = null;
+  <main>
+    <!-- ===== MENU ===== -->
+    <section id="screen-menu" class="screen">
+      <div class="hero">
+        <h1>Solve the tomato puzzles before time runs out!</h1>
+        <p class="muted">Every puzzle hides a digit from 0 to 9. Click it or type it on your keyboard.</p>
+      </div>
+      <div id="difficulty-grid" class="difficulty-grid">
+        <!-- filled by ui.js from GET /api/game/difficulties -->
+      </div>
+    </section>
 
-    async function loadPuzzle() {
-      const res = await fetch('/api/game/puzzle');
-      const data = await res.json();
-      puzzleId = data.puzzleId;
-      document.getElementById('puzzle').src = data.image;
-      document.getElementById('result').textContent = '';
-    }
+    <!-- ===== GAME ===== -->
+    <section id="screen-game" class="screen hidden">
+      <div class="card">
+        <div class="hud">
+          <div class="hud-item">Score <b id="hud-score">0</b></div>
+          <div class="hud-item">Puzzle <b id="hud-number">1</b></div>
+          <div class="hud-item">Streak <b id="hud-streak">0</b> 🔥</div>
+          <div id="hud-lives" class="lives" aria-label="lives"></div>
+        </div>
+        <div class="timer"><div id="timer-fill" class="timer-fill"></div></div>
 
-    document.getElementById('answer-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const answer = document.getElementById('answer').value;
-      const res = await fetch('/api/game/answer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ puzzleId, answer }),
-      });
-      const data = await res.json();
-      document.getElementById('result').textContent =
-        data.correct ? 'Correct!' : `Wrong - the answer was ${data.solution}`;
-    });
+        <div class="puzzle-wrap">
+          <img id="puzzle-img" alt="Tomato puzzle - find the missing digit">
+          <div id="puzzle-loading" class="loading">Fetching a fresh tomato…</div>
+          <span id="puzzle-source" class="source-tag"></span>
+        </div>
 
-    document.getElementById('next').addEventListener('click', loadPuzzle);
-    loadPuzzle();
-  </script>
+        <div id="feedback" class="feedback"></div>
+
+        <div id="numpad" class="numpad">
+          <!-- buttons 0-9 created by ui.js -->
+        </div>
+
+        <div class="game-footer">
+          <span class="muted">Tip: press <b>0–9</b> on your keyboard · <b>Esc</b> to quit</span>
+          <button id="btn-quit" class="btn secondary small">Quit game</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== GAME OVER ===== -->
+    <section id="screen-over" class="screen hidden">
+      <div class="card over">
+        <h2>Game over</h2>
+        <div id="over-score" class="big-score">0</div>
+        <div class="stats-row">
+          <div><b id="over-solved">0</b><span class="muted">solved</span></div>
+          <div><b id="over-streak">0</b><span class="muted">best streak</span></div>
+          <div><b id="over-difficulty">-</b><span class="muted">difficulty</span></div>
+        </div>
+        <div class="actions">
+          <button id="btn-again" class="btn">Play again</button>
+          <button id="btn-menu" class="btn secondary">Back to menu</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

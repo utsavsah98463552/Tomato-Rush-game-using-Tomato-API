@@ -29,3 +29,17 @@ git checkout main      # back to the latest version
 * `GET /api/game/puzzle` and `POST /api/game/answer` endpoints.
 * First prototype page: shows a puzzle, checks an answer, loads the next one.
 * External sources documented in `docs/references.md`.
+
+## Week 4 – GUI & events
+* Real game screen: HUD (score, puzzle no., streak, lives), timer bar, puzzle image,
+  0–9 number pad, feedback banner, game-over screen.
+* **Event-driven design in the browser**
+  * DOM events: `click` (with event delegation on the number pad), `keydown` (0–9, Esc).
+  * Timer events: `setInterval` tick every 100 ms; reaching 0 fires `puzzle:timeout`.
+  * Custom event bus (`eventBus.js`, built on `EventTarget`/`CustomEvent`): the
+    `GameController` emits `game:started`, `puzzle:loaded`, `answer:result`, `game:over`;
+    `ui.js` only listens and redraws (observer pattern, loose coupling).
+* **Game rules moved to the server** (`gameService.js`): lives, score, streak and the
+  time limit are checked by the server so a player cannot cheat from the browser.
+* Difficulty levels: Easy / Normal / Hard.
+* Central Express error handler; friendly message when the Tomato API is down.

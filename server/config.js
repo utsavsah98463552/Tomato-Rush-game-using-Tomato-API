@@ -14,4 +14,8 @@ module.exports = {
   port: Number(process.env.PORT) || 3000,
   isProduction: process.env.NODE_ENV === 'production',
   publicDir: path.join(__dirname, '..', 'public'),
+
+  // Interoperability: third-party Tomato API (base64=yes -> image bytes come inside the JSON)
+  tomatoApiUrl: process.env.TOMATO_API_URL || 'https://marcconrad.com/uob/tomato/api.php?out=json&base64=yes',
+  apiTimeoutMs: Number(process.env.API_TIMEOUT_MS) || 5000,
 };

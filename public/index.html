@@ -16,11 +16,43 @@
 <body>
   <header class="topbar">
     <div class="logo">🍅 Tomato <span>Rush</span></div>
+    <div id="user-chip" class="user-chip hidden">
+      <span>Playing as <strong id="user-name"></strong></span>
+      <button id="btn-logout" class="btn secondary small">Log out</button>
+    </div>
   </header>
 
   <main>
+    <!-- ===== LOGIN / REGISTER ===== -->
+    <section id="screen-auth" class="screen hidden">
+      <div class="auth-wrap">
+        <div class="auth-intro">
+          <h1>Ready for a tomato rush?</h1>
+          <p class="muted">Log in to play, keep your scores and climb the leaderboard.</p>
+        </div>
+        <div class="card auth-card">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="login" role="tab">Log in</button>
+            <button class="tab" data-tab="register" role="tab">Create account</button>
+          </div>
+          <form id="auth-form" novalidate>
+            <label>Username
+              <input id="auth-username" name="username" autocomplete="username" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+">
+            </label>
+            <label>Password
+              <input id="auth-password" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="72">
+            </label>
+            <label class="check"><input id="auth-remember" type="checkbox"> Remember my username on this computer</label>
+            <p id="auth-error" class="form-error" role="alert"></p>
+            <button id="auth-submit" class="btn wide" type="submit">Log in</button>
+            <p id="auth-hint" class="muted small-text hidden">Password: at least 8 characters. Username: 3–20 letters, numbers or _.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== MENU ===== -->
-    <section id="screen-menu" class="screen">
+    <section id="screen-menu" class="screen hidden">
       <div class="hero">
         <h1>Solve the tomato puzzles before time runs out!</h1>
         <p class="muted">Every puzzle hides a digit from 0 to 9. Click it or type it on your keyboard.</p>

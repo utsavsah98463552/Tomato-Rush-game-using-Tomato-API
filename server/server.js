@@ -12,7 +12,9 @@
 'use strict';
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const config = require('./config');
+const authRoutes = require('./routes/authRoutes');
 const gameRoutes = require('./routes/gameRoutes');
 
 /** Create and configure the Express app (exported so tests can use it). */
@@ -20,9 +22,11 @@ function createApp() {
   const app = express();
 
   app.use(express.json({ limit: '10kb' }));      // parse JSON request bodies
+  app.use(cookieParser());                        // read cookies into req.cookies
   app.use(express.static(config.publicDir));      // serve the front end
 
-  app.use('/api/game', gameRoutes);               // game endpoints
+  app.use('/api/auth', authRoutes);               // register / login / logout
+  app.use('/api/game', gameRoutes);               // game endpoints (login required)
 
   // Simple health check - useful to prove the server is up during the demo.
   app.get('/api/health', (req, res) => {

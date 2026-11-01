@@ -15,6 +15,7 @@
 const express = require('express');
 const tomatoApi = require('../services/tomatoApi');
 const { createGameService, DIFFICULTIES } = require('../services/gameService');
+const { requireAuth } = require('../auth/auth');
 
 const gameService = createGameService({ getPuzzle: tomatoApi.fetchPuzzle });
 
@@ -23,12 +24,15 @@ setInterval(() => gameService.cleanup(), 10 * 60 * 1000).unref();
 
 const router = express.Router();
 
-// Week 4: no login yet, everybody plays as "Guest".
-const currentPlayer = (req) => ({ id: 'guest', username: 'Guest' });
+// The logged-in user (set by requireAuth from the session cookie) owns the game.
+const currentPlayer = (req) => req.user;
 
 router.get('/difficulties', (req, res) => {
   res.json(DIFFICULTIES);
 });
+
+// Everything below needs a valid session cookie.
+router.use(requireAuth);
 
 router.post('/start', (req, res) => {
   const difficulty = (req.body && req.body.difficulty) || 'normal';

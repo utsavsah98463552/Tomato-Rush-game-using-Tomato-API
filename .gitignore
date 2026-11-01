@@ -1,0 +1,15 @@
+# Dependencies (re-created with `npm install`)
+node_modules/
+
+# Runtime data - user accounts and scores are NOT committed to git
+data/*.json
+
+# Secrets
+.env
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

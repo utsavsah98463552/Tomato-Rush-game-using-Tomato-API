@@ -1,0 +1,15 @@
+# Weekly Progress Log
+
+Each week's work is developed on its own branch, merged into `main` with a merge commit,
+and tagged `week-0N` so the state of the project at any week can be checked out:
+
+```bash
+git checkout week-03   # look at the project as it was in week 3
+git checkout main      # back to the latest version
+```
+
+## Week 1 – Commenting & code design
+* Chose the stack (Node.js + Express + plain JavaScript) – reasons in `architecture.md`.
+* Drew the client / server / Tomato API architecture.
+* Set up the repository, `.gitignore` and folder plan.
+* Placeholder `public/index.html` with the screen layout sketched in comments.

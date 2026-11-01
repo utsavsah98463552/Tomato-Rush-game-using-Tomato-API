@@ -20,10 +20,10 @@ function createStore(file) {
   function load() {
     try {
       const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-      return { users: data.users || [] };
+      return { users: data.users || [], scores: data.scores || [] };
     } catch (err) {
       if (err.code !== 'ENOENT') console.warn(`Could not read ${file}, starting empty:`, err.message);
-      return { users: [] };
+      return { users: [], scores: [] };
     }
   }
 
@@ -63,6 +63,64 @@ function createStore(file) {
       Object.assign(user, changes);
       save();
       return user;
+    },
+
+    /* ---------- scores (week 6) ---------- */
+
+    addScore({ userId, username, difficulty, score, solved, bestStreak, durationSeconds }) {
+      const entry = {
+        id: crypto.randomUUID(),
+        userId,
+        username,
+        difficulty,
+        score,
+        solved,
+        bestStreak,
+        durationSeconds,
+        playedAt: new Date().toISOString(),
+      };
+      db.scores.push(entry);
+      save();
+      return entry;
+    },
+
+    /**
+     * Leaderboard: each player's BEST score, highest first.
+     * @param {{difficulty?: string, limit?: number}} options difficulty 'all' or a level
+     */
+    topScores({ difficulty = 'all', limit = 10 } = {}) {
+      const best = new Map(); // userId -> best entry
+      for (const s of db.scores) {
+        if (difficulty !== 'all' && s.difficulty !== difficulty) continue;
+        const current = best.get(s.userId);
+        if (!current || s.score > current.score) best.set(s.userId, s);
+      }
+      return [...best.values()]
+        .sort((a, b) => b.score - a.score || a.playedAt.localeCompare(b.playedAt))
+        .slice(0, limit)
+        .map((s, i) => ({
+          rank: i + 1,
+          username: s.username,
+          score: s.score,
+          difficulty: s.difficulty,
+          solved: s.solved,
+          playedAt: s.playedAt,
+        }));
+    },
+
+    /** Personal statistics for the menu screen. */
+    userStats(userId) {
+      const mine = db.scores.filter((s) => s.userId === userId);
+      const total = mine.reduce((sum, s) => sum + s.score, 0);
+      return {
+        gamesPlayed: mine.length,
+        bestScore: mine.reduce((m, s) => Math.max(m, s.score), 0),
+        averageScore: mine.length ? Math.round(total / mine.length) : 0,
+        totalSolved: mine.reduce((sum, s) => sum + s.solved, 0),
+        bestStreak: mine.reduce((m, s) => Math.max(m, s.bestStreak), 0),
+        recent: mine.slice(-5).reverse().map(({ score, difficulty, solved, playedAt }) =>
+          ({ score, difficulty, solved, playedAt })),
+      };
     },
   };
 }

@@ -57,3 +57,13 @@ git checkout main      # back to the latest version
 * Secrets configured via environment variables (`.env.example`); server refuses to start
   in production without `JWT_SECRET`.
 * Bug fixed after testing: form stayed on "Create account" tab after logout.
+
+## Week 6 – Persistence, leaderboard & server-side events
+* Finished games are saved (score, solved, best streak, duration) in `data/db.json`.
+* **Server-side event-driven design:** `gameService` only raises `game:finished` on a
+  Node.js `EventEmitter` (`server/events/gameEvents.js`). A separate handler saves the
+  score and raises `score:saved`. The game logic does not know about the database.
+* `GET /api/leaderboard?difficulty=` – best score per player, top 10, filterable.
+* `GET /api/leaderboard/me` – personal stats (games, best, average, solved, recent games).
+* Menu shows "Your stats" and "Leaderboard"; game-over screen shows "New personal best!".
+* Usernames are HTML-escaped before rendering (XSS defence).

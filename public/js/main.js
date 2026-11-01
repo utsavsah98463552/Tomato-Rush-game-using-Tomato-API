@@ -18,6 +18,7 @@ import * as ui from './ui.js';
 
 const game = new GameController();
 let lastDifficulty = 'normal';
+let bestBeforeGame = 0; // to detect a new personal best
 let authMode = 'login'; // or 'register'
 
 /** Run an async action and turn any error into an "app:error" event. */
@@ -72,6 +73,7 @@ on('auth:changed', (user) => {
   if (user) {
     $('user-name').textContent = user.username;
     ui.showScreen('menu');
+    refreshMenuData();
   } else {
     const remembered = auth.rememberedUsername();
     $('auth-username').value = remembered;
@@ -88,6 +90,32 @@ on('app:error', (err) => {
     game.stopTimer();
     auth.restoreSession();
   }
+});
+
+/* ---------- leaderboard & stats ---------- */
+
+const refreshLeaderboard = safely(async (flashName) => {
+  const difficulty = $('board-filter').value;
+  const entries = await api.get(`/api/leaderboard?difficulty=${encodeURIComponent(difficulty)}`);
+  ui.renderLeaderboard(entries, auth.currentUser && auth.currentUser.username, flashName);
+});
+
+const refreshStats = safely(async () => {
+  const stats = await api.get('/api/leaderboard/me');
+  bestBeforeGame = stats.bestScore;
+  ui.renderStats(stats);
+});
+
+function refreshMenuData() {
+  refreshStats();
+  refreshLeaderboard();
+}
+
+$('board-filter').addEventListener('change', () => refreshLeaderboard()); // "change" event
+
+on('game:over', (summary) => {
+  ui.showPersonalBest(summary.score > 0 && summary.score > bestBeforeGame);
+  refreshMenuData(); // score was saved on the server by the game:finished handler
 });
 
 /* ---------- game ---------- */

@@ -133,3 +133,24 @@ h1, h2, h3 { margin: 0 0 .75rem; line-height: 1.2; }
 .btn.wide { width: 100%; }
 .small-text { font-size: .85rem; margin-top: .75rem; }
 @media (max-width: 760px) { .auth-wrap { grid-template-columns: 1fr; min-height: 0; } .auth-intro { text-align: center; } }
+
+/* ---------- menu panels (week 6) ---------- */
+.menu-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+.stat-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-bottom: 1rem; }
+.stat-tiles div { background: var(--bg); border-radius: 12px; padding: .75rem; }
+.stat-tiles b { display: block; font-size: 1.6rem; color: var(--tomato); }
+.recent, .board { list-style: none; padding: 0; margin: 0; }
+.recent li, .board li { display: flex; justify-content: space-between; gap: .5rem; padding: .5rem 0; border-bottom: 1px solid var(--line); }
+.recent li:last-child, .board li:last-child { border-bottom: 0; }
+.board li .rank { width: 2rem; font-weight: 700; color: var(--muted); }
+.board li .who { flex: 1; }
+.board li.me { background: var(--leaf-soft); border-radius: 8px; padding-left: .4rem; padding-right: .4rem; }
+.board li.flash { animation: flash 1.2s ease-out; }
+@keyframes flash { from { background: #ffe8a8; } to { background: transparent; } }
+.board-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.board-head select { font: inherit; padding: .35rem .6rem; border-radius: 10px; border: 2px solid var(--line); background: #fff; }
+.tag { font-size: .75rem; padding: 1px 8px; border-radius: 999px; background: var(--bg); color: var(--muted); }
+.empty { color: var(--muted); justify-content: center !important; }
+.best-banner { color: var(--leaf); font-weight: 700; font-size: 1.2rem; }
+.live { font-size: .8rem; color: var(--leaf); vertical-align: middle; }
+@media (max-width: 760px) { .menu-panels { grid-template-columns: 1fr; } }

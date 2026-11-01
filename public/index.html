@@ -60,6 +60,32 @@
       <div id="difficulty-grid" class="difficulty-grid">
         <!-- filled by ui.js from GET /api/game/difficulties -->
       </div>
+
+      <div class="menu-panels">
+        <div class="card">
+          <h2>Your stats</h2>
+          <div class="stat-tiles">
+            <div><b id="stat-games">0</b><span class="muted">games</span></div>
+            <div><b id="stat-best">0</b><span class="muted">best score</span></div>
+            <div><b id="stat-avg">0</b><span class="muted">average</span></div>
+            <div><b id="stat-solved">0</b><span class="muted">puzzles solved</span></div>
+          </div>
+          <h3>Recent games</h3>
+          <ul id="recent-games" class="recent"></ul>
+        </div>
+        <div class="card">
+          <div class="board-head">
+            <h2>Leaderboard <span id="live-badge" class="live hidden">● live</span></h2>
+            <select id="board-filter" aria-label="Filter leaderboard by difficulty">
+              <option value="all">All levels</option>
+              <option value="easy">Easy</option>
+              <option value="normal">Normal</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <ol id="leaderboard" class="board"></ol>
+        </div>
+      </div>
     </section>
 
     <!-- ===== GAME ===== -->
@@ -96,6 +122,7 @@
     <section id="screen-over" class="screen hidden">
       <div class="card over">
         <h2>Game over</h2>
+        <p id="over-best" class="best-banner hidden">🏆 New personal best!</p>
         <div id="over-score" class="big-score">0</div>
         <div class="stats-row">
           <div><b id="over-solved">0</b><span class="muted">solved</span></div>

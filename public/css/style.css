@@ -115,3 +115,21 @@ h1, h2, h3 { margin: 0 0 .75rem; line-height: 1.2; }
   .numpad button { font-size: 1.3rem; padding: .6rem 0; }
   .hero h1 { font-size: 1.7rem; }
 }
+
+/* ---------- auth (week 5) ---------- */
+.auth-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; min-height: 60vh; }
+.auth-intro h1 { font-size: 2.4rem; }
+.tabs { display: flex; gap: .5rem; margin-bottom: 1.25rem; background: var(--bg); padding: .3rem; border-radius: 999px; }
+.tab { flex: 1; border: 0; background: transparent; padding: .55rem; border-radius: 999px; font-weight: 600; color: var(--muted); }
+.tab.active { background: var(--card); color: var(--tomato); box-shadow: var(--shadow); }
+#auth-form label { display: block; margin-bottom: 1rem; font-weight: 600; }
+#auth-form input:not([type="checkbox"]) {
+  display: block; width: 100%; margin-top: .35rem; padding: .7rem .9rem; font: inherit;
+  border: 2px solid var(--line); border-radius: 12px; background: #fff;
+}
+#auth-form input:focus { outline: none; border-color: var(--tomato); }
+#auth-form label.check { font-weight: 400; display: flex; gap: .5rem; align-items: center; }
+.form-error { color: var(--tomato-dark); min-height: 1.2rem; margin: .25rem 0 .75rem; }
+.btn.wide { width: 100%; }
+.small-text { font-size: .85rem; margin-top: .75rem; }
+@media (max-width: 760px) { .auth-wrap { grid-template-columns: 1fr; min-height: 0; } .auth-intro { text-align: center; } }

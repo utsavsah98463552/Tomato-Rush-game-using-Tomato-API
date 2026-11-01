@@ -34,7 +34,9 @@ export async function restoreSession() {
 }
 
 export async function login(username, password) {
-  setUser(await api.post('/api/auth/login', { username, password }));
+  const user = await api.post('/api/auth/login', { username, password });
+  setUser(user);
+  return user; // includes previousLogin {at, ip}
 }
 
 export async function register(username, password) {

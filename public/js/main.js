@@ -15,6 +15,7 @@ import { emit, on } from './eventBus.js';
 import { GameController } from './game.js';
 import * as auth from './auth.js';
 import * as ui from './ui.js';
+import { connectLive, disconnectLive } from './live.js';
 
 const game = new GameController();
 let lastDifficulty = 'normal';
@@ -51,8 +52,15 @@ $('auth-form').addEventListener('submit', async (event) => {
   $('auth-error').textContent = '';
   $('auth-submit').disabled = true;
   try {
-    if (authMode === 'login') await auth.login(username, password);
-    else await auth.register(username, password);
+    if (authMode === 'login') {
+      const user = await auth.login(username, password);
+      if (user.previousLogin) {
+        const when = new Date(user.previousLogin.at).toLocaleString();
+        ui.toast(`👋 Welcome back! Last login: ${when} from IP ${user.previousLogin.ip}`, 6000);
+      }
+    } else {
+      await auth.register(username, password);
+    }
     if ($('auth-remember').checked) auth.rememberUsername(username);
     else auth.forgetUsername();
     $('auth-password').value = '';
@@ -74,10 +82,12 @@ on('auth:changed', (user) => {
     $('user-name').textContent = user.username;
     ui.showScreen('menu');
     refreshMenuData();
+    connectLive();
   } else {
     const remembered = auth.rememberedUsername();
     $('auth-username').value = remembered;
     $('auth-remember').checked = Boolean(remembered);
+    disconnectLive();
     setAuthMode('login'); // returning players usually want to log in, not register
     ui.showScreen('auth');
   }
@@ -115,8 +125,19 @@ $('board-filter').addEventListener('change', () => refreshLeaderboard()); // "ch
 
 on('game:over', (summary) => {
   ui.showPersonalBest(summary.score > 0 && summary.score > bestBeforeGame);
-  refreshMenuData(); // score was saved on the server by the game:finished handler
+  refreshStats(); // the leaderboard itself is refreshed by the live "score" event below
 });
+
+// Pushed by the server (Server-Sent Events) whenever ANY player's score is saved.
+on('leaderboard:score', (entry) => {
+  refreshLeaderboard(entry.username);
+  const me = auth.currentUser && auth.currentUser.username;
+  if (entry.username !== me && !game.active) {
+    ui.toast(`🎉 ${entry.username} just scored ${entry.score} on ${entry.difficulty}!`);
+  }
+});
+
+on('live:status', (connected) => $('live-badge').classList.toggle('hidden', !connected));
 
 /* ---------- game ---------- */
 

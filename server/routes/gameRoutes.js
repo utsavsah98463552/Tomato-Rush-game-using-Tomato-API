@@ -13,7 +13,7 @@
 'use strict';
 
 const express = require('express');
-const tomatoApi = require('../services/tomatoApi');
+const { createPuzzleProvider } = require('../services/puzzleProvider');
 const { createGameService, DIFFICULTIES } = require('../services/gameService');
 const { requireAuth } = require('../auth/auth');
 const gameEvents = require('../events/gameEvents');
@@ -21,7 +21,7 @@ const gameEvents = require('../events/gameEvents');
 // When a game ends the service only RAISES an event. It does not know who listens
 // (saving the score, logging, live leaderboard) - that keeps the parts independent.
 const gameService = createGameService({
-  getPuzzle: tomatoApi.fetchPuzzle,
+  getPuzzle: createPuzzleProvider(), // Tomato API, with offline fallback (week 7)
   onGameOver: (summary) => gameEvents.emit('game:finished', summary),
 });
 

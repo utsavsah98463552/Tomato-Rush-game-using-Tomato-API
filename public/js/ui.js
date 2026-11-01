@@ -25,6 +25,47 @@ export function toast(message, ms = 3500) {
   toastTimer = setTimeout(() => el.classList.add('hidden'), ms); // timeout event
 }
 
+/** Escape text before putting it into innerHTML (defence against XSS). */
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+const shortDate = (iso) => new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+
+/** Personal statistics panel on the menu. */
+export function renderStats(stats) {
+  $('stat-games').textContent = stats.gamesPlayed;
+  $('stat-best').textContent = stats.bestScore;
+  $('stat-avg').textContent = stats.averageScore;
+  $('stat-solved').textContent = stats.totalSolved;
+  $('recent-games').innerHTML = stats.recent.length
+    ? stats.recent.map((g) => `
+        <li><span>${g.score} pts <span class="tag">${escapeHtml(g.difficulty)}</span></span>
+            <span class="muted">${g.solved} solved · ${shortDate(g.playedAt)}</span></li>`).join('')
+    : '<li class="empty">No games yet – pick a difficulty above!</li>';
+}
+
+/**
+ * Leaderboard panel.
+ * @param {Array} entries rows from GET /api/leaderboard
+ * @param {string} me current username (highlighted)
+ * @param {string} [flashName] username whose row should flash (new score just arrived)
+ */
+export function renderLeaderboard(entries, me, flashName) {
+  $('leaderboard').innerHTML = entries.length
+    ? entries.map((e) => `
+        <li class="${e.username === me ? 'me' : ''} ${e.username === flashName ? 'flash' : ''}">
+          <span class="rank">${e.rank}</span>
+          <span class="who">${escapeHtml(e.username)} <span class="tag">${escapeHtml(e.difficulty)}</span></span>
+          <b>${e.score}</b>
+        </li>`).join('')
+    : '<li class="empty">No scores yet – be the first!</li>';
+}
+
+export function showPersonalBest(isBest) {
+  $('over-best').classList.toggle('hidden', !isBest);
+}
+
 /** Build the difficulty cards from the server's settings. */
 export function renderDifficulties(levels) {
   $('difficulty-grid').innerHTML = Object.entries(levels).map(([key, l]) => `
@@ -33,7 +74,7 @@ export function renderDifficulties(levels) {
       <ul>
         <li>⏱ ${l.seconds} seconds per puzzle</li>
         <li>❤️ ${l.lives} lives</li>
-        <li>✖ ${l.multiplier} points multiplier</li>
+        <li>⭐ ×${l.multiplier} score multiplier</li>
       </ul>
     </button>`).join('');
 }

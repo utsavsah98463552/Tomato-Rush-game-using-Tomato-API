@@ -1,6 +1,6 @@
 {
   "name": "tomato-rush",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "description": "Puzzle game using the Tomato API - CIS046-3 Software for Enterprise",
   "main": "server/server.js",
   "scripts": {

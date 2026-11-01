@@ -1,0 +1,117 @@
+/*
+ * style.css - Tomato Rush styles
+ * Author: Utsav Sah
+ */
+:root {
+  --bg: #fff7ef;
+  --card: #ffffff;
+  --ink: #2b1d16;
+  --muted: #7a675c;
+  --line: #f0dfd2;
+  --tomato: #e5482f;
+  --tomato-dark: #b8321d;
+  --leaf: #3f8f3a;
+  --leaf-soft: #e5f3e1;
+  --warn: #f2a33a;
+  --danger-soft: #fde4df;
+  --radius: 16px;
+  --shadow: 0 6px 24px rgba(120, 50, 20, 0.08);
+  font-family: "Fredoka", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); min-height: 100vh; }
+button { font: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .5; }
+.hidden { display: none !important; }
+
+/* ---------- header ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .9rem 1.25rem; background: var(--card); border-bottom: 1px solid var(--line);
+}
+.logo { font-size: 1.4rem; font-weight: 700; color: var(--tomato); letter-spacing: .5px; }
+.logo span { color: var(--leaf); }
+.user-chip { display: flex; align-items: center; gap: .75rem; color: var(--muted); }
+.user-chip strong { color: var(--ink); }
+
+main { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+/* ---------- generic ---------- */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; }
+h1, h2, h3 { margin: 0 0 .75rem; line-height: 1.2; }
+.muted { color: var(--muted); }
+.btn {
+  border: 0; border-radius: 999px; padding: .7rem 1.4rem; font-weight: 600;
+  background: var(--tomato); color: #fff; transition: transform .08s, background .15s;
+}
+.btn:hover:not(:disabled) { background: var(--tomato-dark); }
+.btn:active:not(:disabled) { transform: scale(.97); }
+.btn.secondary { background: transparent; color: var(--ink); border: 2px solid var(--line); }
+.btn.secondary:hover:not(:disabled) { background: var(--line); }
+.btn.small { padding: .4rem .9rem; font-size: .9rem; }
+
+/* ---------- menu ---------- */
+.hero { text-align: center; margin-bottom: 1.5rem; }
+.hero h1 { font-size: 2.2rem; }
+.difficulty-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+.difficulty {
+  text-align: left; border: 2px solid var(--line); background: var(--card); border-radius: var(--radius);
+  padding: 1.25rem; transition: border-color .15s, transform .1s;
+}
+.difficulty:hover { border-color: var(--tomato); transform: translateY(-2px); }
+.difficulty h3 { color: var(--tomato); }
+.difficulty ul { list-style: none; padding: 0; margin: 0; color: var(--muted); line-height: 1.7; }
+
+/* ---------- game ---------- */
+.hud { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: .75rem; }
+.hud-item { font-size: 1.1rem; }
+.hud-item b { font-size: 1.5rem; }
+.lives { font-size: 1.5rem; letter-spacing: 2px; }
+.timer { height: 12px; background: var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 1rem; }
+.timer-fill { height: 100%; width: 100%; background: var(--leaf); transition: width .1s linear, background .3s; }
+.timer-fill.warn { background: var(--warn); }
+.timer-fill.danger { background: var(--tomato); }
+
+.puzzle-wrap {
+  position: relative; min-height: 220px; display: grid; place-items: center;
+  background: #fffdfb; border: 1px dashed var(--line); border-radius: 12px; overflow: hidden;
+}
+.puzzle-wrap img { max-width: 100%; max-height: 360px; display: block; }
+.puzzle-wrap .loading { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(255,253,251,.85); font-size: 1.1rem; color: var(--muted); }
+.source-tag { position: absolute; right: 8px; bottom: 6px; font-size: .75rem; color: var(--muted); background: #fff; padding: 2px 8px; border-radius: 999px; }
+
+.feedback { min-height: 2.6rem; margin: .9rem 0; text-align: center; font-size: 1.2rem; font-weight: 600; border-radius: 12px; padding: .45rem; }
+.feedback.good { background: var(--leaf-soft); color: var(--leaf); }
+.feedback.bad { background: var(--danger-soft); color: var(--tomato-dark); }
+
+.numpad { display: grid; grid-template-columns: repeat(5, 1fr); gap: .6rem; }
+.numpad button {
+  font-size: 1.6rem; font-weight: 700; padding: .8rem 0; border-radius: 14px;
+  border: 2px solid var(--line); background: var(--card); color: var(--ink);
+}
+.numpad button:hover:not(:disabled) { border-color: var(--tomato); color: var(--tomato); }
+.numpad button.pressed { background: var(--tomato); color: #fff; border-color: var(--tomato); }
+.game-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; gap: 1rem; flex-wrap: wrap; }
+
+/* ---------- game over ---------- */
+.over { text-align: center; }
+.big-score { font-size: 3.5rem; font-weight: 700; color: var(--tomato); margin: .25rem 0 1rem; }
+.stats-row { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.stats-row div { min-width: 90px; }
+.stats-row b { display: block; font-size: 1.6rem; }
+.actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: 1.5rem; transform: translateX(-50%);
+  background: var(--ink); color: #fff; padding: .75rem 1.25rem; border-radius: 12px;
+  box-shadow: var(--shadow); max-width: calc(100% - 2rem); z-index: 10;
+}
+
+@media (max-width: 520px) {
+  .numpad { gap: .4rem; }
+  .numpad button { font-size: 1.3rem; padding: .6rem 0; }
+  .hero h1 { font-size: 1.7rem; }
+}
